@@ -1,0 +1,91 @@
+FROM ubuntu:24.04
+
+LABEL maintainer="jay.ponda@improwised.com"
+
+# Disable interactive prompts in APT
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set the timezone
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Update package lists and install essential packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    wget \
+    vim \
+    git \
+    ca-certificates \
+    zip \
+    unzip \ 
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR /app
+
+# Copy your application files to the container (optional)
+# COPY . /app
+RUN apt-get update && apt-get upgrade -y \
+    && mkdir -p /etc/apt/keyrings \
+    && apt-get install -y gnupg gosu supervisor sqlite3 libcap2-bin libpng-dev python3 dnsutils librsvg2-bin fswatch ffmpeg  \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list
+
+RUN apt-get update \
+    && apt-get install -y php8.3-cli php8.3-dev \
+    php8.3-pgsql php8.3-sqlite3 php8.3-gd \
+    php8.3-imap php8.3-mysql php8.3-mbstring \
+    php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
+    php8.3-intl php8.3-readline \
+    php8.3-ldap \
+    php-curl php-fpm libcurl4-openssl-dev \
+    php8.3-msgpack php8.3-igbinary php8.3-redis \
+    #       php8.3-swoole \
+    php8.3-memcached php8.3-pcov php8.3-imagick php8.3-xdebug \
+    && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
+
+RUN apt-get update \
+    && apt-get install -y nodejs \
+    && npm install -g npm \
+    && npm install -g pnpm \
+    && npm install -g bun \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/keyrings/pgdg.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt noble-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+
+# clean-ups
+RUN apt-get update \
+    && apt-get install -y mysql-client \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# install composer and laravel
+RUN apt-get update \
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && composer global require laravel/installer
+
+# copy php.ini file
+COPY scripts/config/php.ini /etc/php/8.3/cli/php.ini
+
+# make a laravel global
+RUN echo 'export PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH' >> ~/.bash_profile
+
+# set current directory as safe
+RUN git config --global --add safe.directory .
+
+# Set laravel path
+ENV PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH
+
+# TODO: Install PHP packages  
+# RUN composer install
+
+# Example of running a default command (modify as needed)
+CMD git config --global --add safe.directory /app && sleep infinity

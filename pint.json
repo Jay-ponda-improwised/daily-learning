@@ -1,0 +1,76 @@
+{
+    "preset": "laravel",
+    "strict": true,
+    "exclude": [
+        ".vscode",
+        ".github",
+        "/vendor",
+        "/storage",
+        "/public",
+        "/bootstrap"
+    ],
+    "rules": {
+        "statement_indentation": {
+            "stick_comment_to_next_continuous_control_statement": true
+        },
+        "no_extra_blank_lines": {
+            "tokens": [
+                "curly_brace_block",
+                "extra",
+                "parenthesis_brace_block",
+                "square_brace_block",
+                "throw",
+                "use"
+            ]
+        },
+        "blank_line_between_import_groups": true,
+        "blank_line_after_namespace": true,
+        "class_reference_name_casing": true,
+        "control_structure_braces": true,
+        "function_declaration": {
+            "closure_function_spacing": "none"
+        },
+        "standardize_increment": true,
+        "increment_style": {
+            "style": "post"
+        },
+        "method_argument_space": {
+            "attribute_placement": "same_line",
+            "keep_multiple_spaces_after_comma": false,
+            "on_multiline": "ensure_fully_multiline"
+        },
+        "no_blank_lines_after_class_opening": true,
+        "no_spaces_around_offset": true,
+        "no_unused_imports": true,
+        "no_useless_concat_operator": true,
+        "nullable_type_declaration": {
+            "syntax": "question_mark"
+        },
+        "numeric_literal_separator": {
+            "strategy": "use_separator"
+        },
+        "no_mixed_echo_print": {
+            "use": "print"
+        },
+        "method_chaining_indentation": true,
+        "no_alternative_syntax": {
+            "fix_non_monolithic_code": true
+        },
+        "no_useless_else": true,
+        "operator_linebreak": {
+            "position": "beginning"
+        },
+        "php_unit_method_casing": {
+            "case": "camel_case"
+        },
+        "phpdoc_indent": true,
+        "phpdoc_param_order": true,
+        "single_class_element_per_statement": {
+            "elements": [
+                "const",
+                "property"
+            ]
+        },
+        "phpdoc_separation": true
+    }
+}
