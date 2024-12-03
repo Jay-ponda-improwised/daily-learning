@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     ca-certificates \
     zip \
-    unzip \ 
+  unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
@@ -84,8 +84,11 @@ RUN git config --global --add safe.directory .
 # Set laravel path
 ENV PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH
 
-# TODO: Install PHP packages  
+# TODO: Install PHP packages
 # RUN composer install
 
+# Expose port
+EXPOSE 8425
+
 # Example of running a default command (modify as needed)
-CMD git config --global --add safe.directory /app && sleep infinity
+CMD git config --global --add safe.directory /app && php artisan serve --host=0.0.0.0 --port=8425

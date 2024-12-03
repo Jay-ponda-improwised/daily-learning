@@ -12,14 +12,14 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - mysql_data:/var/lib/mysql
-      
+
   laravel-magic:
     container_name: laravel-magic-backend-service
-    build: 
+    build:
       context: .
-      dockerfile: dockerfile.yaml      
+      dockerfile: dockerfile.yaml
     ports:
-      - "8888:8080"
+      - "8425:8425"
     volumes:
       - .:/app
     depends_on:
