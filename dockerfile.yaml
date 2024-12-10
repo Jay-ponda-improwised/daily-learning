@@ -85,7 +85,7 @@ ENV PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH
 # RUN composer install
 
 # Expose port
-EXPOSE 8425
+EXPOSE 8425 8000
 
 # Example of running a default command (modify as needed)
 CMD git config --global --add safe.directory /app && php artisan serve --host=0.0.0.0 --port=8425

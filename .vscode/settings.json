@@ -26,6 +26,7 @@
         "nodesource",
         "noninteractive",
         "ondrej",
+        "onsubmit",
         "pcov",
         "pecl",
         "pgdg",

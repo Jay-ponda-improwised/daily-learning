@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\View\View;
+
 
 class RedisTesting extends Controller
 {
+
+    public function show(): View
+    {
+        return view('redis', ['redis' => [
+            'laravel' => 'redis',
+        ]]);
+    }
 
     public function index(Request $request, int $id, string $key): string
     {
@@ -20,7 +29,7 @@ class RedisTesting extends Controller
     /**
      * Store the newly created resource in storage.
      */
-    public function store(Request $request, int $id, string $key): never
+    public function store(Request $request, int $id, string $key): mixed
     {
         $value = $request->value;
         $timing = $request->get('timing', '3600');
@@ -43,8 +52,7 @@ class RedisTesting extends Controller
         Redis::set("$id",  "$keys,$key");
     }
 
-    private function getKeys(int $id): never{
-
+    private function getKeys(int $id): mixed {
         return Redis::get("$id");
     }
 

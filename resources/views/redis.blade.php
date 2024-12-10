@@ -30,12 +30,15 @@
             text-align: center;
             width: 100%;
         }
-    </style>
+
+        </style>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body style="padding: 5px">
     <h1>Redis test</h1>
-    <form method="post" submit="addNewKey(event)">
+    <form onsubmit="addNewKey(event)">
+        @csrf
         <label>Id:
             <input type="text" name="id" id="id" />
         </label>
@@ -62,8 +65,7 @@
             </tr>
         @endforeach
     </table>
-    <script src="{{ asset('resources/js/redis_demo.js') }}" defer></script>
-    {{-- @vite(['resources/js/redis_demo.js']) --}}
+    <script src="{{ asset('js/redis_demo.js') }}" defer></script>
 </body>
 
 </html>

@@ -8,18 +8,21 @@ Route::get('/', function() {
     return view('welcome');
 });
 
-Route::group(['prefix' => 'redis'], function () {
-
+Route::controller(App\Http\Controllers\RedisTesting::class)
+    ->prefix('/redis')
+    ->group(function (){
     // get view
-    Route::get('/', function () {
-        return view('redis', ['redis' => [
-            'laravel' => 'redis',
-        ]]);
-    });
+    Route::get('/', 'show')->name('home');
 
     // add key-value pair
-    Route::post('/{id}/upsert/{key}', [App\Http\Controllers\RedisTesting::class, 'store']);
+    Route::post('/{id}/upsert/{key}', 'store')->name('store');
 
     // get key-value pair
-    Route::get('/{id}/get/{key}', [App\Http\Controllers\RedisTesting::class, 'index']);
+    Route::get('/{id}/get/{key}', 'index')->name('index');
+
+})->name('redis-demo.');
+
+
+Route::fallback(function () {
+    return abort(404);
 });
