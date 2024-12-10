@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "appendonly",
         "autoload",
         "autoremove",
         "bcmath",
@@ -7,8 +8,10 @@
         "devcontainers",
         "dnsutils",
         "dont",
+        "endforeach",
         "fswatch",
         "gosu",
+        "healthcheck",
         "igbinary",
         "imagick",
         "imap",
@@ -24,12 +27,20 @@
         "noninteractive",
         "ondrej",
         "pcov",
+        "pecl",
         "pgdg",
         "pgsql",
         "phpdoc",
+        "phpredis",
+        "preconnect",
+        "predis",
         "ptrace",
+        "Redis",
+        "requirepass",
         "seccomp",
+        "sslmode",
         "swoole",
+        "vite",
         "zoneinfo"
     ]
 }

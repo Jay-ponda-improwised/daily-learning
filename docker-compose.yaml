@@ -12,6 +12,28 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6380"
+    volumes:
+      - redis_data:/data
+      - ./scripts/config/redis.conf:/usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf"]
 
   laravel-magic:
     container_name: laravel-magic-backend-service
@@ -24,8 +46,11 @@ services:
       - .:/app
     depends_on:
       - mysql
+      - redis
     # command: ["sleep", "infinity"]
 
 volumes:
   mysql_data:
+    driver: local
+  redis_data:
     driver: local

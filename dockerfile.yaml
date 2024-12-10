@@ -78,9 +78,6 @@ COPY scripts/config/php.ini /etc/php/8.3/cli/php.ini
 # make a laravel global
 RUN echo 'export PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH' >> ~/.bash_profile
 
-# set current directory as safe
-RUN git config --global --add safe.directory .
-
 # Set laravel path
 ENV PATH=~/.config/composer/vendor/bin:/app/vendor/bin:$PATH
 
