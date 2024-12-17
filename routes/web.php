@@ -20,6 +20,9 @@ Route::controller(App\Http\Controllers\RedisTesting::class)
     // get key-value pair
     Route::get('/{id}/get/{key}', 'index')->name('index');
 
+    // get all key-value pairs
+    Route::get('/{id}/all', 'getAllKeys')->name('all');
+
 })->name('redis-demo.');
 
 

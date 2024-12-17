@@ -30,28 +30,29 @@
             text-align: center;
             width: 100%;
         }
-
-        </style>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body style="padding: 5px">
     <h1>Redis test</h1>
-    <form onsubmit="addNewKey(event)">
+    <form onsubmit="addNewKey(event)" style="display: flex; flex-direction: row; justify-content: space-between; margin: 10px 5px">
         @csrf
         <label>Id:
             <input type="text" name="id" id="id" />
-        </label>
+            <button type="button" id="refresh">Refresh</button>
+        </label><br/>
         <label>Key:
             <input type="text" name="key" id="key" />
-        </label>
+            <button type="button" id="confirm">Confirm Value</button>
+        </label><br/>
         <label>Value:
             <input type="text" name="value" id="value" />
+            <button type="submit" id="submit">Submit</button>
         </label>
-        <button type="submit" id="submit">Submit</button>
     </form>
 
-    <table>
+    <table id="table">
         <tr>
             <th>index</th>
             <th>Key</th>

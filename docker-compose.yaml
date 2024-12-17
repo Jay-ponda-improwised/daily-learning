@@ -42,7 +42,6 @@ services:
       dockerfile: dockerfile.yaml
     ports:
       - "8425:8425"
-      - "8000"
     volumes:
       - .:/app
     depends_on:

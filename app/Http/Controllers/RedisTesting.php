@@ -17,13 +17,14 @@ class RedisTesting extends Controller
         ]]);
     }
 
-    public function index(Request $request, int $id, string $key): string
+    public function index(Request $request, int $id, string $key): string|null
     {
         $value = Redis::get("$id:$key");
-        if(is_null($value)){
-            return $this->removeKey($id, $key);
+        if (is_null($value)) {
+            $this->removeKey($id, $key);
+            return json_encode(['error' => 'Key not found']);
         }
-        return $value;
+        return json_encode(['value' => $value]);
     }
 
     /**
@@ -38,22 +39,41 @@ class RedisTesting extends Controller
         return Redis::set("$id:$key",  $value, 'EX', (int)$timing);
     }
 
-    private function removeKey(int $id, string $key): void {
+    private function removeKey(int $id, string $key): void
+    {
         $keys = $this->getKeys($id);
-        if(strpos($keys, $key) !== false){
+        if (strpos($keys, $key) !== false) {
             $keys = explode(',', $keys);
-            $keys = array_filter($keys, function($k) use($key){return $k !== $key;});
+            $keys = array_filter($keys, function ($k) use ($key) {
+                return $k !== $key;
+            });
             Redis::set("$id",  implode(',', $keys));
         }
     }
 
-    private function storeKey(int $id, string $key): void {
+    private function storeKey(int $id, string $key): void
+    {
         $keys = $this->getKeys($id);
         Redis::set("$id",  "$keys,$key");
     }
 
-    private function getKeys(int $id): mixed {
+    private function getKeys(int $id): mixed
+    {
         return Redis::get("$id");
+    }
+
+    public function getAllKeys(int $id): array
+    {
+        $result = [];
+        $keys = $this->getKeys($id);
+        foreach (explode(',', $keys) as $key) {
+            if (is_null($result[$key])) {
+                $this->removeKey($id, $key);
+            } else {
+                $result[$key] = Redis::get("$id:$key");
+            }
+        }
+        return $result;
     }
 
     /**

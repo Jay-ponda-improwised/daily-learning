@@ -1,4 +1,4 @@
---remove-orphans => to remove orphan docker container 
+--remove-orphans => to remove orphan docker container
 
 "scripts": {
         "post-root-package-install": [
@@ -19,3 +19,8 @@
             "@php artisan package:discover --ansi"
         ]
     },
+
+SHOW GRANTS FOR CURRENT_USER();
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+SHOW GRANTS FOR 'user'@'%';
+CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
