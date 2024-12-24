@@ -41,6 +41,7 @@
         "requirepass",
         "seccomp",
         "sslmode",
+        "stylesheet",
         "swoole",
         "vite",
         "zoneinfo"

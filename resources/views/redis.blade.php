@@ -36,16 +36,19 @@
 
 <body style="padding: 5px">
     <h1>Redis test</h1>
-    <form onsubmit="addNewKey(event)" style="display: flex; flex-direction: row; justify-content: space-between; margin: 10px 5px">
+    <div style="width: 100%; text-align: right">Timing remaining to refresh: <span id="remaining">0s</span></div>
+    <form onsubmit="return addNewKey(event, restart_timer)"
+        style="display: flex; flex-direction: row; justify-content: space-between; margin: 10px 5px">
         @csrf
         <label>Id:
-            <input type="text" name="id" id="id" />
+            <input type="text" name="id" id="id" readonly value="{{ $id }}" />
             <button type="button" id="refresh">Refresh</button>
-        </label><br/>
+        </label><br />
         <label>Key:
             <input type="text" name="key" id="key" />
             <button type="button" id="confirm">Confirm Value</button>
-        </label><br/>
+        </label><br />
+        <input type="hidden" name="timing" id="timing" value="20" />
         <label>Value:
             <input type="text" name="value" id="value" />
             <button type="submit" id="submit">Submit</button>
@@ -53,20 +56,25 @@
     </form>
 
     <table id="table">
-        <tr>
-            <th>index</th>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-        @foreach ($redis as $key => $value)
+        <thead>
             <tr>
-                <td>{{ $loop->index + 1 }}</td>
-                <td>{{ $key }}</td>
-                <td>{{ $value }}</td>
+                <th>index</th>
+                <th>Key</th>
+                <th>Value</th>
             </tr>
-        @endforeach
+        </thead>
+        <tbody>
+            @foreach ($redis as $key => $value)
+                <tr>
+                    <td>{{ $loop->index + 1 }}</td>
+                    <td>{{ $key }}</td>
+                    <td>{{ $value }}</td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
     <script src="{{ asset('js/redis_demo.js') }}" defer></script>
+    <script src="{{ asset('js/timings.js') }}" defer></script>
 </body>
 
 </html>

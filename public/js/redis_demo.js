@@ -1,26 +1,27 @@
-async function addNewKey(event) {
-    console.log("clicked");
+async function addNewKey(event, handler) {
     event.preventDefault();
     document.getElementById('submit').disabled = true;
     id = document.getElementById('id').value;
     key = document.getElementById('key').value;
     value = document.getElementById('value').value;
+    timing = document.getElementById('timing').value;
 
-        const response = await fetch('/redis/' + document.getElementById('id').value + '/upsert/' + document.getElementById('key').value, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                value: value
-            })
-        });
-        console.log(await response.json());
+    const response = await fetch('/redis/' + document.getElementById('id').value + '/upsert/' + document.getElementById('key').value, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            value: value,
+            timing: timing
+        })
+    });
 
-
-    document.getElementById('submit').disabled = false;
-
+    const jsonResponse = await response.json();
+    console.log(jsonResponse)
+    refresh(event);
+    handler(refresh, event);
 }
 
 async function confirm(event) {
@@ -57,7 +58,8 @@ async function refresh(event) {
     document.getElementById('submit').disabled = false;
 }
 
-async function updateTable(data){
+async function updateTable(response) {
+    const data = response['data']['redis'];
     const table = document.getElementById('table').getElementsByTagName('tbody')[0];
     while (table.hasChildNodes()) {
         table.removeChild(table.lastChild);

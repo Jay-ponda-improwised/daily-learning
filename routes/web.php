@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Redis;
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
@@ -11,8 +9,13 @@ Route::get('/', function() {
 Route::controller(App\Http\Controllers\RedisTesting::class)
     ->prefix('/redis')
     ->group(function (){
+
     // get view
-    Route::get('/', 'show')->name('home');
+    Route::get('/', function(){
+        return redirect('/redis/1');
+    })->name('home-base');
+
+    Route::get('/{id}', 'show')->name('home');
 
     // add key-value pair
     Route::post('/{id}/upsert/{key}', 'store')->name('store');

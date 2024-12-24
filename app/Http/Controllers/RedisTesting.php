@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\View\View;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
+use App\Http\Resources\RedisTestResource;
+use Predis\Command\Redis\TYPE;
 
 class RedisTesting extends Controller
 {
 
-    public function show(): View
+    public function show(Request $request, int $id): View
     {
-        return view('redis', ['redis' => [
-            'laravel' => 'redis',
-        ]]);
+        $result = $this->getAllKeys($id);
+        $data = $result->resolve($request);
+        return view('redis',  $data);
     }
 
     public function index(Request $request, int $id, string $key): string|null
@@ -34,6 +36,7 @@ class RedisTesting extends Controller
     {
         $value = $request->value;
         $timing = $request->get('timing', '3600');
+        Log::alert($timing);
         $this->storeKey($id, $key);
 
         return Redis::set("$id:$key",  $value, 'EX', (int)$timing);
@@ -62,18 +65,19 @@ class RedisTesting extends Controller
         return Redis::get("$id");
     }
 
-    public function getAllKeys(int $id): array
+    public function getAllKeys(int $id): RedisTestResource
     {
         $result = [];
         $keys = $this->getKeys($id);
         foreach (explode(',', $keys) as $key) {
-            if (is_null($result[$key])) {
+            $value = Redis::get("$id:$key");
+            if (is_null($value)) {
                 $this->removeKey($id, $key);
             } else {
-                $result[$key] = Redis::get("$id:$key");
+                $result[$key] = $value;
             }
         }
-        return $result;
+        return new RedisTestResource(['id' => $id, 'redis' => $result]);
     }
 
     /**
