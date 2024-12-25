@@ -1,5 +1,7 @@
 <?php
 
+use App\Mail\SMTPTesting;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
@@ -27,6 +29,14 @@ Route::controller(App\Http\Controllers\RedisTesting::class)
     Route::get('/{id}/all', 'getAllKeys')->name('all');
 
 })->name('redis-demo.');
+
+Route::prefix('/smtp')->group(function () {
+
+    Route::get('/', function () {
+        Mail::to(['pondajay637@gmail.com'])->send(new SMTPTesting());
+        return (new SMTPTesting())->render();
+    })->name('test-mail');
+})->name('smtp-demo');
 
 
 Route::fallback(function () {
