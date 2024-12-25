@@ -4,6 +4,7 @@
         "autoload",
         "autoremove",
         "bcmath",
+        "cellspacing",
         "dearmor",
         "devcontainers",
         "dnsutils",

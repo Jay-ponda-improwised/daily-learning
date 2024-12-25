@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Mail demo</title>
     <style>
         :root {
             margin: 0 0;
@@ -38,11 +38,10 @@
             color: aliceblue;
         }
 
-        main .background {
-            background-image: url({{ asset('images/bg.jpg') }});
-            background-color: rgb(255, 202, 202);
+        .background {
             width: 100%;
             height: 100%;
+            background-color: rgb(148, 163, 164);
             background-size: contain;
             background-position: center;
             background-repeat: repeat;
@@ -50,12 +49,8 @@
             background-size: 40% 40%;
             background-blend-mode: overlay;
 
-            position: fixed;
-            left: 0;
-            right: 0;
-            z-index: -1;
-            opacity: 50%;
             /* filter: invert(80%); */
+            background-image: url({{ asset('images/bg.jpg') }});
             filter: saturate(300%);
         }
 
@@ -72,7 +67,7 @@
             padding: 45px;
             text-align: center;
             color: cornsilk;
-            background-color: rgba(87, 21, 21, .85);
+            background-color: rgba(99, 22, 22, 0.95);
             border-radius: 5px;
             border: 1px solid rgb(188, 97, 183);
         }
@@ -101,17 +96,16 @@
             padding: 5px;
             width: max-content;
         }
+
+        .link {
+            color: rgb(246, 122, 255);
+        }
     </style>
 </head>
 
-<body>
+<body class="background" style="background: url({{ asset('images/bg.jpg') }}); background-size: 40% 200%;">
     <main>
-        <div class="background"></div>
         <div class="content">
-            <div class="header">
-                <h1 class="main">Mail test</h1>
-                <p class="main-content">Test email with.</p>
-            </div>
 
             <table width="100%" border="0" cellpadding="0" cellspacing="0" class="main-body">
                 <tr>
@@ -138,7 +132,7 @@
                                     @foreach ($entries as $entry => $value)
                                     <tr>
                                         @foreach ($columns as $index => $th)
-                                        <td>{{ $value[$th] ?? '-- default --' }}</td>
+                                        <td :class="{ 'link': $th === 'email' }" style="cursor: pointer;">{{ $value[$th] ?? '-- default --' }}</td>
                                         @endforeach
                                     </tr>
                                     @endforeach
@@ -148,13 +142,34 @@
 
                             <br />
                             @if (!empty($url))
-                            <a href="{{ $url }}" style="color: rgb(246, 122, 255);">Go to website</a>
+                            <a class="link" href="{{ $url }}">Go to website</a>
                             @endif
                     </td>
                 </tr>
             </table>
         </div>
     </main>
+
+    @if ($send)
+    <footer>
+        <div class="footer">
+            <button id="submit" onclick="sendEmail()">Send Email</button>
+        </div>
+        <script>
+            async function sendEmail() {
+                document.getElementById('submit').disabled = true;
+                const response = await fetch(`/smtp/demo`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                alert("mail sent successfully");
+                document.getElementById('submit').disabled = false;
+            }
+        </script>
+    </footer>
+    @endif
 </body>
 
 </html>

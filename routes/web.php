@@ -33,9 +33,12 @@ Route::controller(App\Http\Controllers\RedisTesting::class)
 Route::prefix('/smtp')->group(function () {
 
     Route::get('/', function () {
-        Mail::to(['pondajay637@gmail.com'])->send(new SMTPTesting());
-        return (new SMTPTesting())->render();
+        return (new SMTPTesting(true))->render();
     })->name('test-mail');
+
+    Route::get('/demo', function () {
+        Mail::to(['pondajay637@gmail.com'])->send(new SMTPTesting(false));
+    });
 })->name('smtp-demo');
 
 

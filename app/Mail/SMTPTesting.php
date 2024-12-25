@@ -13,8 +13,11 @@ use Illuminate\Mail\Mailables\Address;
 class SMTPTesting extends Mailable
 {
     use Queueable, SerializesModels;
+    public $send;
 
-    public function __construct(){}
+    public function __construct(bool $send = false){
+        $this->send = $send;
+    }
 
     /**
      * Get the message envelope.
@@ -53,7 +56,8 @@ class SMTPTesting extends Mailable
                         'name' => 'Jane Doe',
                         'email' => 'ZzL5I@example.com',
                     ]
-                ]
+                ],
+                'send' => $this->send
             ]
         );
     }
